@@ -1,0 +1,240 @@
+### Grammar for Python version 1.6
+### Retrieved and processed by getGrammar.py on Thu Sep  1 20:07:32 2016
+
+#L 
+# Extracted from notation.html:
+#L name:           lc_letter (lc_letter | "_")*
+#L lc_letter:      "a"..."z"
+#L 
+# Extracted from identifiers.html:
+#L identifier:     (letter|"_") (letter|digit|"_")*
+#L letter:         lowercase | uppercase
+#L lowercase:      "a"..."z"
+#L uppercase:      "A"..."Z"
+#L digit:          "0"..."9"
+#L 
+# Extracted from strings.html:
+#L stringliteral:   shortstring | longstring
+#L shortstring:     "'" shortstringitem* "'" | '"' shortstringitem* '"'
+#L longstring:      "'''" longstringitem* "'''" | '"""' longstringitem* '"""'
+#L shortstringitem: shortstringchar | escapeseq
+#L longstringitem:  longstringchar | escapeseq
+#L shortstringchar: <any ASCII character except "\" or newline or the quote>
+#L longstringchar:  <any ASCII character except "\">
+#L escapeseq:       "\" <any ASCII character>
+#L 
+# Extracted from integers.html:
+#L longinteger:    integer ("l"|"L")
+#L integer:        decimalinteger | octinteger | hexinteger
+#L decimalinteger: nonzerodigit digit* | "0"
+#L octinteger:     "0" octdigit+
+#L hexinteger:     "0" ("x"|"X") hexdigit+
+#L nonzerodigit:   "1"..."9"
+#L octdigit:       "0"..."7"
+#L hexdigit:        digit|"a"..."f"|"A"..."F"
+#L 
+# Extracted from floating.html:
+#L floatnumber:    pointfloat | exponentfloat
+#L pointfloat:     [intpart] fraction | intpart "."
+#L exponentfloat:  (nonzerodigit digit* | pointfloat) exponent
+#L intpart:        nonzerodigit digit* | "0"
+#L fraction:       "." digit+
+#L exponent:       ("e"|"E") ["+"|"-"] digit+
+#L 
+# Extracted from imaginary.html:
+#L imagnumber:     (floatnumber | intpart) ("j"|"J")
+#L 
+# Extracted from expressions.html:
+#L name:           othername
+#L 
+# Extracted from atoms.html:
+
+atom:      identifier | literal | enclosure
+enclosure: parenth_form|list_display|dict_display|string_conversion
+
+# Extracted from atom-literals.html:
+literal: stringliteral | integer | longinteger | floatnumber | imagnumber
+
+# Extracted from parenthesized.html:
+parenth_form:      "(" [expression_list] ")"
+
+# Extracted from lists.html:
+list_display:   "[" [expression_list] "]"
+
+# Extracted from dict.html:
+dict_display:   "{" [key_datum_list] "}"
+key_datum_list: key_datum ("," key_datum)* [","]
+key_datum:      expression ":" expression
+
+# Extracted from string-conversions.html:
+string_conversion: "`" expression_list "`"
+
+# Extracted from primaries.html:
+primary:        atom | attributeref | subscription | slicing | call
+
+# Extracted from attribute-references.html:
+attributeref:   primary "." identifier
+
+# Extracted from subscriptions.html:
+subscription:   primary "[" expression_list "]"
+
+# Extracted from slicings.html:
+slicing:          simple_slicing | extended_slicing
+simple_slicing:   primary "[" short_slice "]"
+extended_slicing: primary "[" slice_list "]" 
+slice_list:       slice_item ("," slice_item)* [","]
+slice_item:       expression | proper_slice | ellipsis
+proper_slice:     short_slice | long_slice
+short_slice:      [lower_bound] ":" [upper_bound]
+long_slice:       short_slice ":" [stride]
+lower_bound:      expression
+upper_bound:      expression
+stride:           expression
+ellipsis:         "..."
+
+# Extracted from calls.html:
+call:                   primary "(" [argument_list [","]] ")"
+argument_list:          positional_arguments ["," keyword_arguments]
+                      | keyword_arguments
+positional_arguments:   expression ("," expression)*
+keyword_arguments:      keyword_item ("," keyword_item)*
+keyword_item:           identifier "=" expression
+
+# Extracted from power.html:
+power:         primary ["**" u_expr]
+
+# Extracted from unary.html:
+u_expr:         power | "-" u_expr | "+" u_expr | "~" u_expr
+
+# Extracted from binary.html:
+m_expr:         u_expr | m_expr "*" u_expr
+              | m_expr "/" u_expr | m_expr "%" u_expr
+a_expr:         m_expr | a_expr "+" m_expr | a_expr "-" m_expr
+
+# Extracted from shifting.html:
+shift_expr:     a_expr | shift_expr ( "<<" | ">>" ) a_expr
+
+# Extracted from bitwise.html:
+and_expr:       shift_expr | and_expr "&" shift_expr
+xor_expr:       and_expr | xor_expr "^" and_expr
+or_expr:       xor_expr | or_expr "|" xor_expr
+
+# Extracted from comparisons.html:
+comparison:     or_expr (comp_operator or_expr)*
+comp_operator:  "<"|">"|"=="|">="|"<="|"<>"|"!="|"is" ["not"]|["not"] "in"
+
+# Extracted from lambda.html:
+expression:     or_test | lambda_form
+or_test:        and_test | or_test "or" and_test
+and_test:       not_test | and_test "and" not_test
+not_test:       comparison | "not" not_test
+lambda_form:	"lambda" [parameter_list] ":" expression
+
+# Extracted from exprlists.html:
+expression_list:      expression ("," expression)* [","]
+
+# Extracted from simple.html:
+simple_stmt:    expression_stmt
+              | assert_stmt
+              | assignment_stmt
+              | pass_stmt
+              | del_stmt
+              | print_stmt
+              | return_stmt
+              | raise_stmt
+              | break_stmt
+              | continue_stmt
+              | import_stmt
+              | global_stmt
+              | exec_stmt
+
+# Extracted from exprstmts.html:
+expression_stmt: expression_list
+
+# Extracted from assert.html:
+assert_statement: "assert" expression ["," expression]
+
+# Extracted from assignment.html:
+assignment_stmt: (target_list "=")+ expression_list
+target_list:     target ("," target)* [","]
+target:          identifier | "(" target_list ")" | "[" target_list "]"
+               | attributeref | subscription | slicing
+
+# Extracted from pass.html:
+pass_stmt:      "pass"
+
+# Extracted from del.html:
+del_stmt:       "del" target_list
+
+# Extracted from print.html:
+print_stmt:     "print" [ expression ("," expression)* [","] ]
+
+# Extracted from return.html:
+return_stmt:    "return" [expression_list]
+
+# Extracted from raise.html:
+raise_stmt:     "raise" [expression ["," expression ["," expression]]]
+
+# Extracted from break.html:
+break_stmt:     "break"
+
+# Extracted from continue.html:
+continue_stmt:  "continue"
+
+# Extracted from import.html:
+import_stmt:    "import" module ("," module)* 
+              | "from" module "import" identifier ("," identifier)*
+              | "from" module "import" "*" 
+module:         (identifier ".")* identifier
+
+# Extracted from global.html:
+global_stmt:    "global" identifier ("," identifier)*
+
+# Extracted from exec.html:
+exec_stmt:    "exec" expression ["in" expression ["," expression]]
+
+# Extracted from compound.html:
+compound_stmt:  if_stmt | while_stmt | for_stmt
+              | try_stmt | funcdef | classdef
+suite:          stmt_list NEWLINE | NEWLINE INDENT statement+ DEDENT
+statement:      stmt_list NEWLINE | compound_stmt
+stmt_list:      simple_stmt (";" simple_stmt)* [";"]
+
+# Extracted from if.html:
+if_stmt:        "if" expression ":" suite
+
+# Extracted from while.html:
+while_stmt:     "while" expression ":" suite
+
+# Extracted from for.html:
+for_stmt:       "for" target_list "in" expression_list ":" suite
+
+# Extracted from try.html:
+try_stmt:       try_exc_stmt | try_fin_stmt
+try_exc_stmt:   "try" ":" suite
+try_fin_stmt:   "try" ":" suite
+
+# Extracted from function.html:
+funcdef:        "def" funcname "(" [parameter_list] ")" ":" suite
+parameter_list: (defparameter ",")* ("*" identifier ["," "**" identifier] 
+                                    | "**" identifier 
+                                    | defparameter [","])
+defparameter:   parameter ["=" expression]
+sublist:        parameter ("," parameter)* [","]
+parameter:      identifier | "(" sublist ")"
+funcname:       identifier
+
+# Extracted from class.html:
+classdef:       "class" classname [inheritance] ":" suite
+inheritance:    "(" [expression_list] ")"
+classname:      identifier
+
+# Extracted from file-input.html:
+file_input:     (NEWLINE | statement)*
+
+# Extracted from interactive.html:
+interactive_input: [stmt_list] NEWLINE | compound_stmt NEWLINE
+
+# Extracted from expression-input.html:
+eval_input:     expression_list NEWLINE*
+input_input:    expression_list NEWLINE

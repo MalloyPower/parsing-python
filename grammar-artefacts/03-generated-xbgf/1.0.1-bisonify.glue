@@ -1,0 +1,185 @@
+// Automatically generated from 1.0.1.txt on 2016-11-23 at 16:45:39 +0000
+// Transformations to convert (bisonify) 1.0.1.txt to 1.0.1.y
+
+// replace embedded choice in file_input ::= "NEWLINE" | stmt
+extract pick_NEWLINE_stmt ::= "NEWLINE" | stmt; in file_input.
+// replace star in file_input ::= pick_NEWLINE_stmt*
+extract star_1 ::= pick_NEWLINE_stmt*; in file_input.
+yaccify star_1 ::= (star_1 pick_NEWLINE_stmt) | ε;. // replaces pick_NEWLINE_stmt*
+// replace star in eval_input ::= "NEWLINE"*
+extract star_NEWLINE ::= "NEWLINE"*; in eval_input.
+yaccify star_NEWLINE ::= (star_NEWLINE "NEWLINE") | ε;. // replaces "NEWLINE"*
+// expand top-level with a single option in parameters ::= "LPAR" varargslist? "RPAR"
+massage varargslist? to (varargslist | ε) in parameters.
+distribute in parameters.
+// replace star in varargslist ::= (fpdef "COMMA")*
+extract star_fpdef_COMMA ::= (fpdef "COMMA")*; in varargslist.
+yaccify star_fpdef_COMMA ::= (star_fpdef_COMMA (fpdef "COMMA")) | ε;. // replaces (fpdef "COMMA")*
+// replace star in varargslist ::= ("COMMA" fpdef)*
+extract star_COMMA_fpdef ::= ("COMMA" fpdef)*; in varargslist.
+yaccify star_COMMA_fpdef ::= (star_COMMA_fpdef ("COMMA" fpdef)) | ε;. // replaces ("COMMA" fpdef)*
+// replace optional in varargslist ::= "COMMA"?
+extract opt_COMMA ::= "COMMA"?; in varargslist.
+massage "COMMA"? to ("COMMA" | ε) in opt_COMMA.
+// expand top-level with a single option in fplist ::= fpdef ("COMMA" fpdef)* "COMMA"?
+massage "COMMA"? to ("COMMA" | ε) in fplist.
+distribute in fplist.
+// replace star in fplist ::= ("COMMA" fpdef)*
+extract star_6 ::= ("COMMA" fpdef)*; in fplist.
+yaccify star_6 ::= (star_6 ("COMMA" fpdef)) | ε;. // replaces ("COMMA" fpdef)*
+// expand top-level with a single option in simple_stmt ::= small_stmt ("SEMI" small_stmt)* "SEMI"? "NEWLINE"
+massage "SEMI"? to ("SEMI" | ε) in simple_stmt.
+distribute in simple_stmt.
+// replace star in simple_stmt ::= ("SEMI" small_stmt)*
+extract star_SEMI_small_stmt ::= ("SEMI" small_stmt)*; in simple_stmt.
+yaccify star_SEMI_small_stmt ::= (star_SEMI_small_stmt ("SEMI" small_stmt)) | ε;. // replaces ("SEMI" small_stmt)*
+// replace star in expr_stmt ::= (testlist "EQUAL")*
+extract star_testlist_EQUAL ::= (testlist "EQUAL")*; in expr_stmt.
+yaccify star_testlist_EQUAL ::= (star_testlist_EQUAL (testlist "EQUAL")) | ε;. // replaces (testlist "EQUAL")*
+// expand top-level with a single option in print_stmt ::= "PRINT" (test "COMMA")* test?
+massage test? to (test | ε) in print_stmt.
+distribute in print_stmt.
+// replace star in print_stmt ::= (test "COMMA")*
+extract star_test_COMMA ::= (test "COMMA")*; in print_stmt.
+yaccify star_test_COMMA ::= (star_test_COMMA (test "COMMA")) | ε;. // replaces (test "COMMA")*
+// expand top-level with a single option in return_stmt ::= "RETURN" testlist?
+massage testlist? to (testlist | ε) in return_stmt.
+distribute in return_stmt.
+// expand top-level with a single option in raise_stmt ::= "RAISE" test ("COMMA" test)?
+massage ("COMMA" test)? to (("COMMA" test) | ε) in raise_stmt.
+distribute in raise_stmt.
+// replace star in import_stmt ::= ("COMMA" "NAME")*
+extract star_COMMA_NAME ::= ("COMMA" "NAME")*; in import_stmt.
+yaccify star_COMMA_NAME ::= (star_COMMA_NAME ("COMMA" "NAME")) | ε;. // replaces ("COMMA" "NAME")*
+// replace embedded choice in import_stmt ::= "STAR" | ("NAME" star_COMMA_NAME)
+extract pick_STAR_NAME ::= "STAR" | ("NAME" star_COMMA_NAME); in import_stmt.
+// replace star in global_stmt ::= ("COMMA" "NAME")*
+extract star_12 ::= ("COMMA" "NAME")*; in global_stmt.
+yaccify star_12 ::= (star_12 ("COMMA" "NAME")) | ε;. // replaces ("COMMA" "NAME")*
+// expand top-level with a single choice in access_stmt ::= "access" ("STAR" | ("NAME" ("COMMA" "NAME")*)) "COLON" accesstype ("COMMA" accesstype)*
+distribute in access_stmt.
+// replace star in access_stmt ::= ("COMMA" accesstype)*
+extract star_COMMA_accesstype ::= ("COMMA" accesstype)*; in access_stmt.
+yaccify star_COMMA_accesstype ::= (star_COMMA_accesstype ("COMMA" accesstype)) | ε;. // replaces ("COMMA" accesstype)*
+// replace star in access_stmt ::= ("COMMA" "NAME")*
+extract star_14 ::= ("COMMA" "NAME")*; in access_stmt.
+yaccify star_14 ::= (star_14 ("COMMA" "NAME")) | ε;. // replaces ("COMMA" "NAME")*
+yaccify accesstype ::= (accesstype "NAME") | "NAME";. // replaces "NAME"+
+// expand top-level with a single option in exec_stmt ::= "EXEC" expr ("IN" test ("COMMA" test)?)?
+massage ("IN" test ("COMMA" test)?)? to (("IN" test ("COMMA" test)?) | ε) in exec_stmt.
+distribute in exec_stmt.
+// replace optional in exec_stmt ::= ("COMMA" test)?
+extract opt_COMMA_test ::= ("COMMA" test)?; in exec_stmt.
+massage ("COMMA" test)? to (("COMMA" test) | ε) in opt_COMMA_test.
+// expand top-level with a single option in if_stmt ::= "IF" test "COLON" suite ("ELIF" test "COLON" suite)* ("ELSE" "COLON" suite)?
+massage ("ELSE" "COLON" suite)? to (("ELSE" "COLON" suite) | ε) in if_stmt.
+distribute in if_stmt.
+// replace star in if_stmt ::= ("ELIF" test "COLON" suite)*
+extract star_16 ::= ("ELIF" test "COLON" suite)*; in if_stmt.
+yaccify star_16 ::= (star_16 ("ELIF" test "COLON" suite)) | ε;. // replaces ("ELIF" test "COLON" suite)*
+// expand top-level with a single option in while_stmt ::= "WHILE" test "COLON" suite ("ELSE" "COLON" suite)?
+massage ("ELSE" "COLON" suite)? to (("ELSE" "COLON" suite) | ε) in while_stmt.
+distribute in while_stmt.
+// expand top-level with a single option in for_stmt ::= "FOR" exprlist "IN" testlist "COLON" suite ("ELSE" "COLON" suite)?
+massage ("ELSE" "COLON" suite)? to (("ELSE" "COLON" suite) | ε) in for_stmt.
+distribute in for_stmt.
+// replace plus in try_stmt ::= (except_clause "COLON" suite)+
+extract plus_17 ::= (except_clause "COLON" suite)+; in try_stmt.
+yaccify plus_17 ::= (plus_17 (except_clause "COLON" suite)) | (except_clause "COLON" suite);. // replaces (except_clause "COLON" suite)+
+// expand top-level with a single option in except_clause ::= "EXCEPT" (test ("COMMA" test)?)?
+massage (test ("COMMA" test)?)? to ((test ("COMMA" test)?) | ε) in except_clause.
+distribute in except_clause.
+// replace optional in except_clause ::= ("COMMA" test)?
+extract opt_18 ::= ("COMMA" test)?; in except_clause.
+massage ("COMMA" test)? to (("COMMA" test) | ε) in opt_18.
+// replace plus in suite ::= stmt+
+extract plus_stmt ::= stmt+; in suite.
+yaccify plus_stmt ::= (plus_stmt stmt) | stmt;. // replaces stmt+
+// replace star in test ::= ("OR" and_test)*
+extract star_OR_and_test ::= ("OR" and_test)*; in test.
+yaccify star_OR_and_test ::= (star_OR_and_test ("OR" and_test)) | ε;. // replaces ("OR" and_test)*
+// expand top-level tail iteration in and_test ::= not_test ("AND" not_test)*
+yaccify and_test ::= (not_test) | (and_test ("AND" not_test));. // replaces not_test ("AND" not_test)*
+// expand top-level tail iteration in comparison ::= expr (comp_op expr)*
+yaccify comparison ::= (expr) | (comparison (comp_op expr));. // replaces expr (comp_op expr)*
+// expand top-level tail iteration in expr ::= xor_expr ("BAR" xor_expr)*
+yaccify expr ::= (xor_expr) | (expr ("BAR" xor_expr));. // replaces xor_expr ("BAR" xor_expr)*
+// expand top-level tail iteration in xor_expr ::= and_expr ("CIRCUMFLEX" and_expr)*
+yaccify xor_expr ::= (and_expr) | (xor_expr ("CIRCUMFLEX" and_expr));. // replaces and_expr ("CIRCUMFLEX" and_expr)*
+// expand top-level tail iteration in and_expr ::= shift_expr ("AMPERSAND" shift_expr)*
+yaccify and_expr ::= (shift_expr) | (and_expr ("AMPERSAND" shift_expr));. // replaces shift_expr ("AMPERSAND" shift_expr)*
+// expand top-level tail iteration in shift_expr ::= arith_expr (("LEFTSHIFT" | "RIGHTSHIFT") arith_expr)*
+yaccify shift_expr ::= (arith_expr) | (shift_expr (("LEFTSHIFT" | "RIGHTSHIFT") arith_expr));. // replaces arith_expr (("LEFTSHIFT" | "RIGHTSHIFT") arith_expr)*
+// replace embedded choice in shift_expr ::= "LEFTSHIFT" | "RIGHTSHIFT"
+extract pick_LEFTSHIFT_RIGHTSHIFT ::= "LEFTSHIFT" | "RIGHTSHIFT"; in shift_expr.
+// expand top-level tail iteration in arith_expr ::= term (("PLUS" | "MINUS") term)*
+yaccify arith_expr ::= (term) | (arith_expr (("PLUS" | "MINUS") term));. // replaces term (("PLUS" | "MINUS") term)*
+// replace embedded choice in arith_expr ::= "PLUS" | "MINUS"
+extract pick_PLUS_MINUS ::= "PLUS" | "MINUS"; in arith_expr.
+// expand top-level tail iteration in term ::= factor (("STAR" | "SLASH" | "PERCENT") factor)*
+yaccify term ::= (factor) | (term (("STAR" | "SLASH" | "PERCENT") factor));. // replaces factor (("STAR" | "SLASH" | "PERCENT") factor)*
+// replace embedded choice in term ::= "STAR" | "SLASH" | "PERCENT"
+extract pick_23 ::= "STAR" | "SLASH" | "PERCENT"; in term.
+// replace embedded choice in factor ::= "PLUS" | "MINUS" | "TILDE"
+extract pick_24 ::= "PLUS" | "MINUS" | "TILDE"; in factor.
+// replace star in factor ::= trailer*
+extract star_trailer ::= trailer*; in factor.
+yaccify star_trailer ::= (star_trailer trailer) | ε;. // replaces trailer*
+// replace optional in atom ::= testlist?
+extract opt_testlist ::= testlist?; in atom.
+massage testlist? to (testlist | ε) in opt_testlist.
+// replace optional in atom ::= dictmaker?
+extract opt_dictmaker ::= dictmaker?; in atom.
+massage dictmaker? to (dictmaker | ε) in opt_dictmaker.
+// expand top-level with a single option in lambdef ::= "LAMBDA" varargslist? "COLON" test
+massage varargslist? to (varargslist | ε) in lambdef.
+distribute in lambdef.
+// replace optional in trailer ::= testlist?
+extract opt_28 ::= testlist?; in trailer.
+massage testlist? to (testlist | ε) in opt_28.
+// replace optional in subscript ::= test?
+extract opt_test ::= test?; in subscript.
+massage test? to (test | ε) in opt_test.
+// expand top-level with a single option in exprlist ::= expr ("COMMA" expr)* "COMMA"?
+massage "COMMA"? to ("COMMA" | ε) in exprlist.
+distribute in exprlist.
+// replace star in exprlist ::= ("COMMA" expr)*
+extract star_COMMA_expr ::= ("COMMA" expr)*; in exprlist.
+yaccify star_COMMA_expr ::= (star_COMMA_expr ("COMMA" expr)) | ε;. // replaces ("COMMA" expr)*
+// expand top-level with a single option in testlist ::= test ("COMMA" test)* "COMMA"?
+massage "COMMA"? to ("COMMA" | ε) in testlist.
+distribute in testlist.
+// replace star in testlist ::= ("COMMA" test)*
+extract star_COMMA_test ::= ("COMMA" test)*; in testlist.
+yaccify star_COMMA_test ::= (star_COMMA_test ("COMMA" test)) | ε;. // replaces ("COMMA" test)*
+// expand top-level with a single option in dictmaker ::= test "COLON" test ("COMMA" test "COLON" test)* "COMMA"?
+massage "COMMA"? to ("COMMA" | ε) in dictmaker.
+distribute in dictmaker.
+// replace star in dictmaker ::= ("COMMA" test "COLON" test)*
+extract star_32 ::= ("COMMA" test "COLON" test)*; in dictmaker.
+yaccify star_32 ::= (star_32 ("COMMA" test "COLON" test)) | ε;. // replaces ("COMMA" test "COLON" test)*
+// expand top-level with a single option in classdef ::= "CLASS" "NAME" ("LPAR" testlist "RPAR")? "COLON" suite
+massage ("LPAR" testlist "RPAR")? to (("LPAR" testlist "RPAR") | ε) in classdef.
+distribute in classdef.
+
+// Phase 2:
+// Equating 5 cloned non-terminals:
+equate opt_18 with opt_COMMA_test.
+equate opt_28 with opt_testlist.
+equate star_14 with star_COMMA_NAME.
+equate star_12 with star_COMMA_NAME.
+equate star_6 with star_COMMA_fpdef.
+
+// Phase 3:
+// Renaming 8 generated non-terminals:
+rename star_COMMA_fpdef to star_fpdef_notest globally. // RHS is (star_fpdef_notest "COMMA" fpdef) | ε
+rename star_1 to star_NEWLINE_stmt globally. // RHS is (star_NEWLINE_stmt pick_NEWLINE_stmt) | ε
+rename pick_23 to pick_old_multop globally. // RHS is "STAR" | "SLASH" | "PERCENT"
+rename opt_test to opt_test_only globally. // RHS is test | ε
+rename star_16 to star_ELIF globally. // RHS is (star_ELIF "ELIF" test "COLON" suite) | ε
+rename star_32 to star_test_COLON_test globally. // RHS is (star_test_COLON_test "COMMA" test "COLON" test) | ε
+rename plus_17 to plus_except globally. // RHS is (plus_except except_clause "COLON" suite) | (except_clause "COLON" suite)
+rename pick_24 to pick_unop globally. // RHS is "PLUS" | "MINUS" | "TILDE"
+
+// The generated bisonify transformations end here.
+

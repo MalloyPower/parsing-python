@@ -1,0 +1,76 @@
+// Manually-written glue for version 2.7.2
+
+// ------------------------------------------------------
+// rename
+// Transformations to do with renaming, creating and deleting non-terminals
+
+// Get rid of some non-terminals that are used once:
+inline pick_augassign.
+distribute in expr_stmt.
+inline opt_test_0.
+distribute in except_clause.
+
+// ------------------------------------------------------
+// remove
+// Narrowing conversion: remove eval_input and then (consequently) star_NEWLINE.
+
+
+removeH start
+	::= file_input
+	| (<>: eval_input)
+	| (<>: encoding_decl)
+	| (<>: single_input)
+    | (<>: dictmaker)
+	;
+.
+
+eliminate eval_input.
+eliminate single_input.
+eliminate encoding_decl.
+eliminate star_NEWLINE.
+eliminate dictmaker.
+
+
+// Problems with DOTs in pick_dotted_name:
+
+deyaccify star_DOT.
+inline star_DOT.
+deyaccify plus_DOT.
+inline plus_DOT.
+massage ("DOT"+) to ("DOT"* "DOT") in pick_dotted_name.
+factor ("DOT"* dotted_name | "DOT"* "DOT") to ("DOT"* (dotted_name | "DOT"))  in pick_dotted_name.
+extract star_DOT ::= "DOT"*; in pick_dotted_name.
+yaccify star_DOT ::= star_DOT "DOT" | ε;.
+distribute in pick_dotted_name.
+
+
+
+// Problems with fpdef in varargslist:
+
+// First deyaccify and inline  star_COMMA_fpdef
+extract temp ::= "COMMA" fpdef opt_EQUAL_test; in star_COMMA_fpdef.
+deyaccify star_COMMA_fpdef.
+inline temp.
+inline star_COMMA_fpdef.
+
+// Now rework the comma leftwards:
+massage (("COMMA" fpdef opt_EQUAL_test)*) to (("COMMA" fpdef opt_EQUAL_test)+ | ε) in varargslist.
+distribute in varargslist.
+extract temp ::= fpdef opt_EQUAL_test;  in varargslist.
+massage (temp ("COMMA" temp)+) to ((temp "COMMA")+ temp) in varargslist.
+inline temp.
+
+// Now replace the + with a *
+extract temp ::= (fpdef opt_EQUAL_test "COMMA")+; in varargslist.
+factor (temp fpdef opt_EQUAL_test opt_COMMA | fpdef opt_EQUAL_test opt_COMMA) to ((temp | ε) fpdef opt_EQUAL_test opt_COMMA) in  varargslist.
+inline temp.
+massage ((fpdef opt_EQUAL_test "COMMA")+ | ε) to ((fpdef opt_EQUAL_test "COMMA")*) in varargslist.
+
+// Last, extract this new use of star_fpdef_COMMA:
+extract temp ::= fpdef opt_EQUAL_test "COMMA"; in star_fpdef_COMMA.
+deyaccify star_fpdef_COMMA.
+inline temp.
+fold star_fpdef_COMMA in varargslist.
+yaccify star_fpdef_COMMA ::= star_fpdef_COMMA (fpdef opt_EQUAL_test "COMMA") | ε;.
+
+
