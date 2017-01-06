@@ -1,11 +1,16 @@
-# ReadMe: The Rascal code
+# The Rascal code
 
 This directory's contents are:
 
-* grammarlab/  A copy of Vadim's [GrammarLab code](https://github.com/cwi-swat/grammarlab) (in Rascal) 
-* pyparse/  Our code to do the transforms etc. (in Rascal)
-* rascal-shell-stable.jar  A copy of the Rascal interpreter (from [here](http://update.rascal-mpl.org/console/rascal-shell-stable.jar)) 
+* pyparse/  Our code to do the transforms etc. (written in Rascal)
+* rascal-shell-stable.jar  A copy of the Rascal interpreter (from [here](http://update.rascal-mpl.org/console/rascal-shell-stable.jar))  - see [the Rascal download page](http://www.rascal-mpl.org/start/) for more information on this.
+* grammarlab/  A copy of Vadim's [GrammarLab code](https://github.com/cwi-swat/grammarlab) (for Rascal) - see [the GrammarLab page](http://grammarware.github.io/lab/index.html) for more on this.
 * readme.md This file
+
+Note: Rascal and GrammarLab weren't developed by us, their authors are:
+* Rascal: the [CWI SWAT folks](http://www.cwi.nl/research-groups/Software-Analysis-and-Transformation)
+* GrammarLab: [Vadim Zaytsev](http://grammarware.github.io/)
+No endorsement from these authors is implied etc. etc.
 
 
 ## Running Rascal at the command line:
@@ -47,8 +52,8 @@ It's easiest if we define a function to get the right folder first:
 loc gf(str f) = |cwd:///../grammar-artefacts| + f; 
 ```
 
-:
-(e.g. all the conflict-free parsers)
+And then we can run the method to process some grammars (e.g. all the
+conflict-free parsers)
 
 ```Rascal
 processFolder(gf("06-conflictfree-parsers"), |cwd:///test.txt|)
@@ -57,7 +62,10 @@ processFolder(gf("06-conflictfree-parsers"), |cwd:///test.txt|)
 This prints the one-line metric summary on screen, and lists the
 details to the file "test.txt".
 
-If you look at the definition of the method on line 299 of the file pyparse/CalcMetrics.rsc you can see that it just reads the grammar can calls another method named processFile (defined just above it on line 289).
+If you look at the definition of the method on line 299 of the file
+pyparse/CalcMetrics.rsc you can see that it just reads the grammar can
+calls another method named processFile (defined just above it on line
+289).
 
 We can call this method directly to process just one grammar file
 (e.g. the original EBNF for ver 2.7.2):
@@ -110,4 +118,10 @@ test.y as the input here).
 As before, the XBGF commands are listed as they're executed, and the
 output is in test2.y.  When running this through bison you should get
 no conflicts.
+
+
+### Authors are:
+* [Brian A. Malloy](http://www.brianmalloy.com/), Clemson University, SC, USA
+* [James F. Power](http://www.cs.nuim.ie/~jpower/), Maynooth University, Ireland
+
 
