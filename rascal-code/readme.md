@@ -10,6 +10,7 @@ This directory's contents are:
 Note: Rascal and GrammarLab weren't developed by us, their authors are:
 * Rascal: the [CWI SWAT folks](http://www.cwi.nl/research-groups/Software-Analysis-and-Transformation)
 * GrammarLab: [Vadim Zaytsev](http://grammarware.github.io/)
+
 No endorsement from these authors is implied etc. etc.
 
 
