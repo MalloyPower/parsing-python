@@ -1,0 +1,113 @@
+# ReadMe: The Rascal code
+
+This directory's contents are:
+
+* grammarlab/  A copy of Vadim's [GrammarLab code](https://github.com/cwi-swat/grammarlab) (in Rascal) 
+* pyparse/  Our code to do the transforms etc. (in Rascal)
+* rascal-shell-stable.jar  A copy of the Rascal interpreter (from [here](http://update.rascal-mpl.org/console/rascal-shell-stable.jar)) 
+* readme.md This file
+
+
+## Running Rascal at the command line:
+
+>  java  -jar  rascal-shell-stable.jar
+
+
+### "Locations" in Rascal:
+
+To specify file names, folders etc. Rascal uses things called
+[locations](http://tutor.rascal-mpl.org/Rascal/Expressions/Values/Location/Location.html),
+of type `loc` in the code.  The simplest way to write these is between
+vertical bars, and to start from the current directory, so for a file
+in the current directory called test.txt we write `|cwd:///test.txt|` -
+note no quotes.
+
+### Importing code
+
+Before you use a Rascal module you need to import it.  The module
+structure matches the directory structure, and Rascal uses the "::"
+notation (like C++). All our code is in pyparse, so the modules you
+need to import are here too.  Importing the first module might take a
+while as everything gets loaded up, but it should be quicker after
+that.
+
+
+## To calculate grammar metrics:
+
+In the Rascal interpreter, type:
+
+```Rascal
+import pyparse::CalcMetrics;
+```
+
+To process all the Python grammars in a folder we supply the folder
+name and an output file name to a method called `processFolder`.
+It's easiest if we define a function to get the right folder first:
+```Rascal
+loc gf(str f) = |cwd:///../grammar-artefacts| + f; 
+```
+
+:
+(e.g. all the conflict-free parsers)
+
+```Rascal
+processFolder(gf("06-conflictfree-parsers"), |cwd:///test.txt|)
+```
+
+This prints the one-line metric summary on screen, and lists the
+details to the file "test.txt".
+
+If you look at the definition of the method on line 299 of the file pyparse/CalcMetrics.rsc you can see that it just reads the grammar can calls another method named processFile (defined just above it on line 289).
+
+We can call this method directly to process just one grammar file
+(e.g. the original EBNF for ver 2.7.2):
+
+```Rascal
+processFile(gf("01-ebnf-major-versions"), "2.7.2.txt", |cwd:///test.txt|)
+```
+
+Note the second argument here (the file name) is a string, the other
+two are locations.
+
+
+## To run an XBGF ("glue") transformation
+
+First import the relevant module:
+
+```Rascal
+import pyparse::RunTransformation;
+```
+
+Let's try transforming some EBNF from python.org to a yacc-able
+grammar (but still with conflicts) using the automatically-generated
+XBGF.  There are three arguments here: you need to specify the input
+file, the glue (XBGF file), and an output file.  I've put them on
+separate lines here for clarity:
+
+```Rascal
+ runTransforms(
+    gf("01-ebnf-major-versions/2.7.2.txt"), 
+    gf("03-generated-xbgf/2.7.2-bisonify.glue"), 
+    |cwd:///test.y| )
+```
+
+When you run this you should see the XBGF commands listed on screen as
+they are processed.  It will print the resulting grammar to screen
+when it's done (not pretty), but check the output file for a readable
+version.  You can run this output (test.y) through bison - for this
+example I get 41 shift/reduce, 1 reduce/reduce conflicts.
+
+Similarly, we can try transforming a grammar to eliminate conflicts;
+just use a different input and glue file (I could also have used
+test.y as the input here).
+
+```Rascal
+ runTransforms(
+    gf("04-bisonified-grammar/2.7.2.y"), 
+    gf("05-handwritten-xbgf/2.7.2-manual.glue"), 
+    |cwd:///test2.y| )
+```
+As before, the XBGF commands are listed as they're executed, and the
+output is in test2.y.  When running this through bison you should get
+no conflicts.
+
