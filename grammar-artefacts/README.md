@@ -1,4 +1,4 @@
-### Grammar Artefacts
+# Grammar Artefacts
 
 This directory holds the various artefacts used in getting from the
 distributed Python EBNF to menhir and bison parsers.  We include this
@@ -14,10 +14,10 @@ minor version numbers:
 We don't consider any of the grammars from the 02-ebnf-minor-versions
 directory any further here.
 
-The 01-ebnf-major-versions has one minor version, 2.7.2, since it is
-slightly different from the 2.7 grammar.
-
-Version 2.3 is the same as 2.2, so we don't consider it further here.
+The 01-ebnf-major-versions directory contains two minor versions, 
+2.4.3 and 2.7.2, since they are different from the grammars
+for the corresponding major versions.  
+The grammar for the major version 2.1 is omitted since it is the same as 2.0.
 The 01-ebnf-major-versions directory also contains EBNFs for 1.x
 versions of Python, but we have not done anything further with these.
 
@@ -41,7 +41,7 @@ out to get a standard context-free grammar.  Since these are standard
 transformations, we have generated the XBGF transformations to do
 this, and stored them in the directory 05-generated-xbgf.
 
-That is, when the transformations in 05-generated-xbgf are run, the y
+That is, when the transformations in 05-generated-xbgf are run, they
 transform the menhir parsers of 04-conflictfree-menhir to the bison
 parsers in 06-conflictfree-bison.
 
