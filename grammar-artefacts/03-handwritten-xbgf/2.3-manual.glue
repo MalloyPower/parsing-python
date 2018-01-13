@@ -1,0 +1,40 @@
+// Manually-written glue for version 2.3 (ebnf version)
+
+// ------------------------------------------------------
+// remove
+// Narrowing conversion: remove all start options but file_input
+
+
+removeH start
+	::= file_input
+	| (<>: eval_input)
+	| (<>: encoding_decl)
+	| (<>: single_input)
+	;
+.
+
+eliminate eval_input.
+eliminate single_input.
+eliminate encoding_decl.
+
+
+
+
+// Problems with fpdef in varargslist:
+
+// First, rework the comma leftwards:
+massage (("COMMA" fpdef ("EQUAL" test)?)*) to (("COMMA" fpdef ("EQUAL" test)?)+ | ε) in varargslist.
+distribute in varargslist.
+extract temp ::= fpdef ("EQUAL" test)?;  in varargslist.
+massage (temp ("COMMA" temp)+) to ((temp "COMMA")+ temp) in varargslist.
+inline temp.
+
+// Now replace the + with a *
+extract temp ::= (fpdef ("EQUAL" test)? "COMMA")+; in varargslist.
+factor (temp fpdef ("EQUAL" test)? "COMMA"? | fpdef ("EQUAL" test)? "COMMA"?) to ((temp | ε) fpdef ("EQUAL" test)? "COMMA"?) in  varargslist.
+inline temp.
+massage ((fpdef ("EQUAL" test)? "COMMA")+ | ε) to ((fpdef ("EQUAL" test)? "COMMA")*) in varargslist.
+
+// Last, extract this new use of star_fpdef_COMMA:
+extract star_fpdef_COMMA ::= (fpdef ("EQUAL" test)? "COMMA")* ; in varargslist.
+yaccify star_fpdef_COMMA ::= star_fpdef_COMMA (fpdef ("EQUAL" test)? "COMMA") | ε;.

@@ -1,0 +1,164 @@
+// Automatically generated from 2.0.mly on 2018-01-13 at 10:29:40.760+00:00
+// Transformations to convert (bisonify) 2.0.mly to 2.0.y
+
+// replace star in file_input ::= ("NEWLINE" | stmt)*
+extract star_NEWLINE_stmt ::= ("NEWLINE" | stmt)*; in file_input.
+yaccify star_NEWLINE_stmt ::= (star_NEWLINE_stmt ("NEWLINE" | stmt)) | ε;. // replaces ("NEWLINE" | stmt)*
+massage varargslist? to (varargslist | ε) in parameters.
+massage ("COMMA" "DOUBLESTAR" "NAME")? to (("COMMA" "DOUBLESTAR" "NAME") | ε) in varargslist.
+massage ("EQUAL" test)? to (("EQUAL" test) | ε) in varargslist.
+massage "COMMA"? to ("COMMA" | ε) in varargslist.
+// replace star in fplist ::= ("COMMA" fpdef)*
+extract star_COMMA_fpdef ::= ("COMMA" fpdef)*; in fplist.
+yaccify star_COMMA_fpdef ::= (star_COMMA_fpdef ("COMMA" fpdef)) | ε;. // replaces ("COMMA" fpdef)*
+massage "COMMA"? to ("COMMA" | ε) in fplist.
+// replace star in simple_stmt ::= ("SEMI" small_stmt)*
+extract star_SEMI_small_stmt ::= ("SEMI" small_stmt)*; in simple_stmt.
+yaccify star_SEMI_small_stmt ::= (star_SEMI_small_stmt ("SEMI" small_stmt)) | ε;. // replaces ("SEMI" small_stmt)*
+massage "SEMI"? to ("SEMI" | ε) in simple_stmt.
+// replace star in expr_stmt ::= ("EQUAL" testlist)*
+extract star_EQUAL_testlist ::= ("EQUAL" testlist)*; in expr_stmt.
+yaccify star_EQUAL_testlist ::= (star_EQUAL_testlist ("EQUAL" testlist)) | ε;. // replaces ("EQUAL" testlist)*
+// replace star in print_stmt ::= ("COMMA" test)*
+extract star_COMMA_test ::= ("COMMA" test)*; in print_stmt.
+yaccify star_COMMA_test ::= (star_COMMA_test ("COMMA" test)) | ε;. // replaces ("COMMA" test)*
+massage "COMMA"? to ("COMMA" | ε) in print_stmt.
+massage (test star_COMMA_test ("COMMA" | ε))? to ((test star_COMMA_test ("COMMA" | ε)) | ε) in print_stmt.
+// replace plus in print_stmt ::= ("COMMA" test)+
+extract plus_COMMA_test ::= ("COMMA" test)+; in print_stmt.
+yaccify plus_COMMA_test ::= (plus_COMMA_test ("COMMA" test)) | ("COMMA" test);. // replaces ("COMMA" test)+
+massage (plus_COMMA_test ("COMMA" | ε))? to ((plus_COMMA_test ("COMMA" | ε)) | ε) in print_stmt.
+massage testlist? to (testlist | ε) in return_stmt.
+massage ("COMMA" test)? to (("COMMA" test) | ε) in raise_stmt.
+massage ("COMMA" test (("COMMA" test) | ε))? to (("COMMA" test (("COMMA" test) | ε)) | ε) in raise_stmt.
+massage (test (("COMMA" test (("COMMA" test) | ε)) | ε))? to ((test (("COMMA" test (("COMMA" test) | ε)) | ε)) | ε) in raise_stmt.
+// replace star in import_stmt ::= ("COMMA" dotted_as_name)*
+extract star_COMMA_dotted_as_name ::= ("COMMA" dotted_as_name)*; in import_stmt.
+yaccify star_COMMA_dotted_as_name ::= (star_COMMA_dotted_as_name ("COMMA" dotted_as_name)) | ε;. // replaces ("COMMA" dotted_as_name)*
+// replace star in import_stmt ::= ("COMMA" import_as_name)*
+extract star_COMMA_import_as_name ::= ("COMMA" import_as_name)*; in import_stmt.
+yaccify star_COMMA_import_as_name ::= (star_COMMA_import_as_name ("COMMA" import_as_name)) | ε;. // replaces ("COMMA" import_as_name)*
+massage ("NAME" "NAME")? to (("NAME" "NAME") | ε) in import_as_name.
+massage ("NAME" "NAME")? to (("NAME" "NAME") | ε) in dotted_as_name.
+// replace star in dotted_name ::= ("DOT" "NAME")*
+extract star_DOT_NAME ::= ("DOT" "NAME")*; in dotted_name.
+yaccify star_DOT_NAME ::= (star_DOT_NAME ("DOT" "NAME")) | ε;. // replaces ("DOT" "NAME")*
+// replace star in global_stmt ::= ("COMMA" "NAME")*
+extract star_COMMA_NAME ::= ("COMMA" "NAME")*; in global_stmt.
+yaccify star_COMMA_NAME ::= (star_COMMA_NAME ("COMMA" "NAME")) | ε;. // replaces ("COMMA" "NAME")*
+massage ("COMMA" test)? to (("COMMA" test) | ε) in exec_stmt.
+massage ("IN" test (("COMMA" test) | ε))? to (("IN" test (("COMMA" test) | ε)) | ε) in exec_stmt.
+massage ("COMMA" test)? to (("COMMA" test) | ε) in assert_stmt.
+// replace star in if_stmt ::= ("ELIF" test "COLON" suite)*
+extract star_10 ::= ("ELIF" test "COLON" suite)*; in if_stmt.
+yaccify star_10 ::= (star_10 ("ELIF" test "COLON" suite)) | ε;. // replaces ("ELIF" test "COLON" suite)*
+massage ("ELSE" "COLON" suite)? to (("ELSE" "COLON" suite) | ε) in if_stmt.
+massage ("ELSE" "COLON" suite)? to (("ELSE" "COLON" suite) | ε) in while_stmt.
+massage ("ELSE" "COLON" suite)? to (("ELSE" "COLON" suite) | ε) in for_stmt.
+// replace plus in try_stmt ::= (except_clause "COLON" suite)+
+extract plus_11 ::= (except_clause "COLON" suite)+; in try_stmt.
+yaccify plus_11 ::= (plus_11 (except_clause "COLON" suite)) | (except_clause "COLON" suite);. // replaces (except_clause "COLON" suite)+
+massage ("ELSE" "COLON" suite)? to (("ELSE" "COLON" suite) | ε) in try_stmt.
+massage ("COMMA" test)? to (("COMMA" test) | ε) in except_clause.
+massage (test (("COMMA" test) | ε))? to ((test (("COMMA" test) | ε)) | ε) in except_clause.
+// replace plus in suite ::= stmt+
+extract plus_stmt ::= stmt+; in suite.
+yaccify plus_stmt ::= (plus_stmt stmt) | stmt;. // replaces stmt+
+// replace star in test ::= ("OR" and_test)*
+extract star_OR_and_test ::= ("OR" and_test)*; in test.
+yaccify star_OR_and_test ::= (star_OR_and_test ("OR" and_test)) | ε;. // replaces ("OR" and_test)*
+// replace star in and_test ::= ("AND" not_test)*
+extract star_AND_not_test ::= ("AND" not_test)*; in and_test.
+yaccify star_AND_not_test ::= (star_AND_not_test ("AND" not_test)) | ε;. // replaces ("AND" not_test)*
+// replace star in comparison ::= (comp_op expr)*
+extract star_comp_op_expr ::= (comp_op expr)*; in comparison.
+yaccify star_comp_op_expr ::= (star_comp_op_expr (comp_op expr)) | ε;. // replaces (comp_op expr)*
+// replace star in expr ::= ("BAR" xor_expr)*
+extract star_BAR_xor_expr ::= ("BAR" xor_expr)*; in expr.
+yaccify star_BAR_xor_expr ::= (star_BAR_xor_expr ("BAR" xor_expr)) | ε;. // replaces ("BAR" xor_expr)*
+// replace star in xor_expr ::= ("CIRCUMFLEX" and_expr)*
+extract star_CIRCUMFLEX_and_expr ::= ("CIRCUMFLEX" and_expr)*; in xor_expr.
+yaccify star_CIRCUMFLEX_and_expr ::= (star_CIRCUMFLEX_and_expr ("CIRCUMFLEX" and_expr)) | ε;. // replaces ("CIRCUMFLEX" and_expr)*
+// replace star in and_expr ::= ("AMPERSAND" shift_expr)*
+extract star_AMPERSAND_shift_expr ::= ("AMPERSAND" shift_expr)*; in and_expr.
+yaccify star_AMPERSAND_shift_expr ::= (star_AMPERSAND_shift_expr ("AMPERSAND" shift_expr)) | ε;. // replaces ("AMPERSAND" shift_expr)*
+// replace star in shift_expr ::= (("LEFTSHIFT" | "RIGHTSHIFT") arith_expr)*
+extract star_19 ::= (("LEFTSHIFT" | "RIGHTSHIFT") arith_expr)*; in shift_expr.
+yaccify star_19 ::= (star_19 (("LEFTSHIFT" | "RIGHTSHIFT") arith_expr)) | ε;. // replaces (("LEFTSHIFT" | "RIGHTSHIFT") arith_expr)*
+// replace star in arith_expr ::= (("PLUS" | "MINUS") term)*
+extract star_20 ::= (("PLUS" | "MINUS") term)*; in arith_expr.
+yaccify star_20 ::= (star_20 (("PLUS" | "MINUS") term)) | ε;. // replaces (("PLUS" | "MINUS") term)*
+// replace star in term ::= (("STAR" | "SLASH" | "PERCENT") factor)*
+extract star_21 ::= (("STAR" | "SLASH" | "PERCENT") factor)*; in term.
+yaccify star_21 ::= (star_21 (("STAR" | "SLASH" | "PERCENT") factor)) | ε;. // replaces (("STAR" | "SLASH" | "PERCENT") factor)*
+// replace star in power ::= trailer*
+extract star_trailer ::= trailer*; in power.
+yaccify star_trailer ::= (star_trailer trailer) | ε;. // replaces trailer*
+massage ("DOUBLESTAR" factor)? to (("DOUBLESTAR" factor) | ε) in power.
+massage testlist? to (testlist | ε) in atom.
+massage listmaker? to (listmaker | ε) in atom.
+massage dictmaker? to (dictmaker | ε) in atom.
+// replace plus in atom ::= "STRING"+
+extract plus_STRING ::= "STRING"+; in atom.
+yaccify plus_STRING ::= (plus_STRING "STRING") | "STRING";. // replaces "STRING"+
+// replace star in listmaker ::= ("COMMA" test)*
+extract star_24 ::= ("COMMA" test)*; in listmaker.
+yaccify star_24 ::= (star_24 ("COMMA" test)) | ε;. // replaces ("COMMA" test)*
+massage "COMMA"? to ("COMMA" | ε) in listmaker.
+massage varargslist? to (varargslist | ε) in lambdef.
+massage arglist? to (arglist | ε) in trailer.
+// replace star in subscriptlist ::= ("COMMA" subscript)*
+extract star_COMMA_subscript ::= ("COMMA" subscript)*; in subscriptlist.
+yaccify star_COMMA_subscript ::= (star_COMMA_subscript ("COMMA" subscript)) | ε;. // replaces ("COMMA" subscript)*
+massage "COMMA"? to ("COMMA" | ε) in subscriptlist.
+massage test? to (test | ε) in subscript.
+massage sliceop? to (sliceop | ε) in subscript.
+massage test? to (test | ε) in sliceop.
+// replace star in exprlist ::= ("COMMA" expr)*
+extract star_COMMA_expr ::= ("COMMA" expr)*; in exprlist.
+yaccify star_COMMA_expr ::= (star_COMMA_expr ("COMMA" expr)) | ε;. // replaces ("COMMA" expr)*
+massage "COMMA"? to ("COMMA" | ε) in exprlist.
+// replace star in testlist ::= ("COMMA" test)*
+extract star_27 ::= ("COMMA" test)*; in testlist.
+yaccify star_27 ::= (star_27 ("COMMA" test)) | ε;. // replaces ("COMMA" test)*
+massage "COMMA"? to ("COMMA" | ε) in testlist.
+// replace star in dictmaker ::= ("COMMA" test "COLON" test)*
+extract star_28 ::= ("COMMA" test "COLON" test)*; in dictmaker.
+yaccify star_28 ::= (star_28 ("COMMA" test "COLON" test)) | ε;. // replaces ("COMMA" test "COLON" test)*
+massage "COMMA"? to ("COMMA" | ε) in dictmaker.
+massage ("LPAR" testlist "RPAR")? to (("LPAR" testlist "RPAR") | ε) in classdef.
+// replace star in arglist ::= (argument "COMMA")*
+extract star_argument_COMMA ::= (argument "COMMA")*; in arglist.
+yaccify star_argument_COMMA ::= (star_argument_COMMA (argument "COMMA")) | ε;. // replaces (argument "COMMA")*
+massage "COMMA"? to ("COMMA" | ε) in arglist.
+massage ("COMMA" "DOUBLESTAR" test)? to (("COMMA" "DOUBLESTAR" test) | ε) in arglist.
+massage (test "EQUAL")? to ((test "EQUAL") | ε) in argument.
+massage list_iter? to (list_iter | ε) in list_for.
+massage list_iter? to (list_iter | ε) in list_if.
+massage ("EQUAL" test)? to (("EQUAL" test) | ε) in star_fpdef_COMMA.
+// replace star in testlist1 ::= ("COMMA" test)*
+extract star_30 ::= ("COMMA" test)*; in testlist1.
+yaccify star_30 ::= (star_30 ("COMMA" test)) | ε;. // replaces ("COMMA" test)*
+
+// Phase 2:
+// Equating 3 cloned non-terminals:
+equate star_27 with star_COMMA_test.
+equate star_24 with star_COMMA_test.
+equate star_30 with star_COMMA_test.
+
+// Phase 3:
+// Renaming 7 generated non-terminals:
+rename star_28 to star_test_COLON_test globally. // RHS is (star_test_COLON_test "COMMA" test "COLON" test) | ε
+rename star_10 to star_ELIF globally. // RHS is (star_ELIF "ELIF" test "COLON" suite) | ε
+rename plus_11 to plus_except globally. // RHS is (plus_except except_clause "COLON" suite) | (except_clause "COLON" suite)
+rename star_COMMA_fpdef to star_fpdef_notest globally. // RHS is (star_fpdef_notest "COMMA" fpdef) | ε
+rename star_19 to star_001 globally. // RHS is (star_001 ("LEFTSHIFT" | "RIGHTSHIFT") arith_expr) | ε
+rename star_21 to star_003 globally. // RHS is (star_003 ("STAR" | "SLASH" | "PERCENT") factor) | ε
+rename star_20 to star_002 globally. // RHS is (star_002 ("PLUS" | "MINUS") term) | ε
+
+// Phase 4:
+// Inlining generated non-terminals for opt/pick:
+distribute globally.
+
+// The generated bisonify transformations end here.
+

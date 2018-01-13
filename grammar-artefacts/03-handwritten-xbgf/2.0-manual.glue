@@ -1,0 +1,65 @@
+// Manually-written glue for version 2.0  (ebnf version)
+
+// ------------------------------------------------------
+// remove
+// Narrowing conversion: remove all start options but file_input
+
+
+removeH start
+	::= file_input
+	| (<>: eval_input)
+	| (<>: single_input)
+	;
+.
+
+eliminate eval_input.
+eliminate single_input.
+
+
+// Problems with fpdef in varargslist:
+
+// First, rework the comma leftwards:
+massage (("COMMA" fpdef ("EQUAL" test)?)*) to (("COMMA" fpdef ("EQUAL" test)?)+ | ε) in varargslist.
+distribute in varargslist.
+extract temp ::= fpdef ("EQUAL" test)?;  in varargslist.
+massage (temp ("COMMA" temp)+) to ((temp "COMMA")+ temp) in varargslist.
+inline temp.
+
+// Now replace the + with a *
+extract temp ::= (fpdef ("EQUAL" test)? "COMMA")+; in varargslist.
+factor (temp fpdef ("EQUAL" test)? "COMMA"? | fpdef ("EQUAL" test)? "COMMA"?) to ((temp | ε) fpdef ("EQUAL" test)? "COMMA"?) in  varargslist.
+inline temp.
+massage ((fpdef ("EQUAL" test)? "COMMA")+ | ε) to ((fpdef ("EQUAL" test)? "COMMA")*) in varargslist.
+
+// Last, extract this new use of star_fpdef_COMMA:
+extract star_fpdef_COMMA ::= (fpdef ("EQUAL" test)? "COMMA")* ; in varargslist.
+yaccify star_fpdef_COMMA ::= star_fpdef_COMMA (fpdef ("EQUAL" test)? "COMMA") | ε;.
+
+
+
+// 2.0 and 2.2 specific stuff
+// Making a decicion to narrow the language here (twice),
+// as this is what's in 2.3 and after...
+
+// (1) Narrowing in definition of power (repeat -> option)
+
+narrow ("DOUBLESTAR" factor)* to ("DOUBLESTAR" factor)? in power.
+
+
+// (2) Narrowing in definition of atom -> "BACKQUOTE" testlist "BACKQUOTE"
+// introduce testlist1 : test (star_COMMA_test); in place of testlist above.
+// Change atom's use of testlist to testlist1
+extract bqatom ::= "BACKQUOTE" testlist "BACKQUOTE"; in atom.
+unfold testlist in bqatom.
+extract testlist1 ::= test ("COMMA" test)* "COMMA"?; in bqatom.
+inline bqatom.
+
+// The narrowing:
+massage ("COMMA"?) to ("COMMA" | ε) in testlist1.
+distribute in testlist1.
+removeH testlist1
+        ::= (<>: (test ("COMMA" test)* "COMMA"))
+        | test ("COMMA" test)*
+        ;.
+
+

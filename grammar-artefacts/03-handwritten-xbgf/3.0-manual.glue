@@ -1,0 +1,125 @@
+// Manually-written glue for version 3.0 (ebnf version)
+
+// ------------------------------------------------------
+// remove
+// Narrowing conversion: remove all start options but file_input
+
+
+removeH start
+	::= file_input
+	| (<>: eval_input)
+	| (<>: encoding_decl)
+	| (<>: single_input)
+    | (<>: testlist1)
+	;
+.
+
+eliminate eval_input.
+eliminate encoding_decl.
+eliminate single_input.
+eliminate testlist1.
+
+// ------------------------------------------------------
+// All 3.x: Problems with DOTs in pick_dotted_name:
+// Need to convert a (.|...)+ to a * and then left-factor.
+
+extract
+  pick_dotted_name ::= (("DOT" | "THREE_DOTS")* dotted_name
+  | ("DOT"|"THREE_DOTS")+);
+  in import_from.
+
+massage (("DOT" | "THREE_DOTS")+) to
+  (("DOT" | "THREE_DOTS")* ("DOT" | "THREE_DOTS"))
+  in pick_dotted_name.
+
+factor
+  (("DOT" | "THREE_DOTS")* dotted_name | ("DOT" | "THREE_DOTS")* ("DOT" | "THREE_DOTS"))
+  to (("DOT" | "THREE_DOTS")* (dotted_name | ("DOT" | "THREE_DOTS")))
+  in pick_dotted_name.
+
+
+// ------------------------------------------------------
+// 3.0/3.1 problems with star_tfpdef_COMMA in typedargslist
+
+// First do some extracts to make referencing easy:
+extract temp ::= tfpdef ("EQUAL" test)?; in typedargslist.
+extract pick_STAR_DOUBLESTAR ::=
+  ("STAR" (tfpdef)? ("COMMA" temp)* ("COMMA" "DOUBLESTAR" tfpdef)?
+  | "DOUBLESTAR" tfpdef);
+in typedargslist.
+
+// Second, regroup so both are ()*
+massage (temp ("COMMA" temp)*) to ((temp "COMMA")* temp) in typedargslist.
+// Now factor that (temp "COMMA")* out:
+factor ((temp "COMMA")* pick_STAR_DOUBLESTAR
+     | (temp "COMMA")* temp ("COMMA")?)
+    to ((temp "COMMA")* (pick_STAR_DOUBLESTAR | temp ("COMMA")?))
+    in typedargslist.
+
+// Third, put it back together again:
+inline temp.
+inline pick_STAR_DOUBLESTAR.
+
+
+
+// Now do that all again with star_vfpdef_COMMA in varargslist
+
+// First do some extracts to make referencing easy:
+extract temp::= vfpdef ("EQUAL" test)?; in varargslist.
+extract pick_STAR_DOUBLESTAR ::=
+  ("STAR" (vfpdef)? ("COMMA" temp)* ("COMMA" "DOUBLESTAR" vfpdef)?
+  | "DOUBLESTAR" vfpdef);
+in varargslist.
+
+// Second, regroup so both are ()*
+massage (temp ("COMMA" temp)*) to ((temp "COMMA")* temp) in varargslist.
+// Now factor that (temp "COMMA")* out:
+factor ((temp "COMMA")* pick_STAR_DOUBLESTAR
+     | (temp "COMMA")* temp ("COMMA")?)
+    to ((temp "COMMA")* (pick_STAR_DOUBLESTAR | temp ("COMMA")?))
+    in varargslist.
+
+// Third, put it back together again:
+inline temp.
+inline pick_STAR_DOUBLESTAR.
+
+
+// ------------------------------------------------------
+// 3.0 and 3.1: Semantics revising transformations
+
+// These were fixed in 3.2, so I just *edit in* the fixes here.
+// Yukky solution, but better than trying to pull the grammar apart now.
+
+//< comparison: star_expr (comp_op star_expr)*
+//> comparison: expr (comp_op expr)*
+replace star_expr with expr in comparison.
+
+//< exprlist: star_expr (',' star_expr)* [',']
+//> exprlist: (expr|star_expr) (',' (expr|star_expr))* [',']
+replace star_expr with (expr|star_expr) in exprlist.
+
+//< star_expr: ['*'] expr
+//> star_expr: '*' expr
+//replace ('STAR')? with 'STAR' in star_expr.
+narrow "STAR"? to "STAR" in star_expr.
+
+//> testlist_star_expr: (test|star_expr) (',' (test|star_expr))* [',']
+introduce
+ testlist_star_expr ::= (test|star_expr) ("COMMA" (test|star_expr))* ("COMMA")?;
+.
+
+//< testlist_comp: test ( comp_for | (',' test)* [','] )
+//> testlist_comp: (test|star_expr) ( comp_for | (',' (test|star_expr))* [','] )
+replace test with (test|star_expr) in testlist_comp.
+
+
+//< expr_stmt: testlist (augassign (yield_expr|testlist) |
+//<                      ('=' (yield_expr|testlist))*)
+//> expr_stmt: testlist_star_expr (augassign (yield_expr|testlist) |
+//>                      ('=' (yield_expr|testlist_star_expr))*)
+extract temp ::= augassign (yield_expr|testlist); in expr_stmt.
+replace testlist with testlist_star_expr in expr_stmt.
+inline temp.
+
+// ------------------------------------------------------
+

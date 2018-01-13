@@ -1,0 +1,26 @@
+// Manually-written glue for version 3.6.0 (ebnf version)
+// same as 3.2
+
+// ------------------------------------------------------
+// remove
+// Narrowing conversion: remove all start options but file_input
+
+
+removeH start
+	::= file_input
+	| (<>: eval_input)
+	| (<>: encoding_decl)
+	| (<>: single_input)
+	;
+.
+
+eliminate eval_input.
+eliminate single_input.
+eliminate encoding_decl.
+
+// 3.x: Problems with DOTs in pick_dotted_name:
+// Need to convert a (.|...)+ to a * and then left-factor.
+extract pick_dotted_name ::= (("DOT" | "THREE_DOTS")* dotted_name | ("DOT"|"THREE_DOTS")+); in import_from.
+massage (("DOT" | "THREE_DOTS")+) to (("DOT" | "THREE_DOTS")* ("DOT" | "THREE_DOTS")) in pick_dotted_name.
+factor (("DOT" | "THREE_DOTS")* dotted_name | ("DOT" | "THREE_DOTS")* ("DOT" | "THREE_DOTS")) to (("DOT" | "THREE_DOTS")* (dotted_name | ("DOT" | "THREE_DOTS")))  in pick_dotted_name.
+
