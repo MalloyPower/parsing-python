@@ -1,6 +1,5 @@
 ### Grammar for Python version 3.2
-### Retrieved and processed by getGrammar.py on Thu Sep  1 15:24:16 2016
-
+### Retrieved and processed by getTar.py on Thu Sep  8 16:18:10 2016
 # Grammar for Python
 
 # Note:  Changing the grammar specified in this file will most likely
