@@ -10,7 +10,7 @@ version-specific scanners in the scanners/ subdirectory.
 
 To build a front-end (in either directory), try:
 
-make PYVER=3.3.0
+> make PYVER=3.3.0
 
 (or whatever version you want).
 
@@ -20,7 +20,7 @@ A 'make dist' in either directory will clean things up again.
 There's a script in there to make and run the fron-end against the
 test suite:
 
-  python3 ./multitest.py 2.7
+>  python3 ./multitest.py 2.7
 
 This will make and then run the 2.7 front-end against the testcases in
 ../testsuite-python-lib.  I haven't copied in the actual Python

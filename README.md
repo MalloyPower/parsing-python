@@ -2,7 +2,9 @@
 
 This is the public repo for the project:
 
-## Extending Automated Grammar Convergence to the Generation and Verification of Multiple Parser Versions
+## Grammar Engineering in Practice: Using Modularisation and
+Transformation to Develop Multiple Front-ends for Python
+
 
 ### Authors are:
 * [Brian A. Malloy](http://www.brianmalloy.com/), Clemson University, SC, USA
