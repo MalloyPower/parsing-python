@@ -7,19 +7,23 @@ so that our experiments can be reproduced.
 ## Starting point: the EBNF Python grammars.
 
 These were downloaded from python.org and extracted from the source.
-We have divided this into two directories based (mostly) on major and
-minor version numbers:
-01-ebnf-major-versions and 02-ebnf-minor-versions
+We have divided this into two directories based on differences.  This almost corresponds to major and minor versions so we have:
+
+01-ebnf-major-versions: grammars that differed from their predecessor
+02-ebnf-minor-versions: grammars the same a their predecessor
 
 We don't consider any of the grammars from the 02-ebnf-minor-versions
 directory any further here.
 
-The 01-ebnf-major-versions directory contains two minor versions, 
-2.4.3 and 2.7.2, since they are different from the grammars
-for the corresponding major versions.  
-The grammar for the major version 2.1 is omitted since it is the same as 2.0.
-The 01-ebnf-major-versions directory also contains EBNFs for 1.x
-versions of Python, but we have not done anything further with these.
+Actually, the folder 01-ebnf-major-versions also contains three
+grammars that have non-relevant modifications from their predecessor:
+2.3, 2.4.3, 2.7.2.  The mofiications we may when converting these to
+parsers will eliminate those differences, so they are not considered
+further in the paper.
+
+The 01-ebnf-major-versions directory also contains a subdiretory with
+EBNFs for Python series 1, but we have not done anything further with
+these.
 
 
 ## Transforming EBNF to menhir parsers

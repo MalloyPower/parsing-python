@@ -43,7 +43,7 @@ that.
 In the Rascal interpreter, type:
 
 ```Rascal
-import pyparse::CalcMetrics;
+import pygrat::CalcMetrics;
 ```
 
 To process all the Python grammars in a folder we supply the folder
@@ -54,10 +54,16 @@ loc gf(str f) = |cwd:///../grammar-artefacts| + f;
 ```
 
 And then we can run the method to process some grammars (e.g. all the
-conflict-free parsers)
+major versions)
 
 ```Rascal
-processFolder(gf("06-conflictfree-parsers"), |cwd:///test.txt|)
+processFolder(gf("01-ebnf-major-versions"), |cwd:///test.txt|)
+```
+
+or the generated menhir parsers:
+
+```Rascal
+processFolder(gf("04-conflictfree-menhir"), |cwd:///test.txt|)
 ```
 
 This prints the one-line metric summary on screen, and lists the
@@ -84,7 +90,7 @@ two are locations.
 First import the relevant module:
 
 ```Rascal
-import pyparse::RunTransformation;
+import pygrat::RunTransformation;
 ```
 
 Let's try transforming some EBNF from python.org to a yacc-able
@@ -95,9 +101,9 @@ separate lines here for clarity:
 
 ```Rascal
  runTransforms(
-    gf("01-ebnf-major-versions/2.7.2.txt"), 
-    gf("03-generated-xbgf/2.7.2-bisonify.glue"), 
-    |cwd:///test.y| )
+    gf("01-ebnf-major-versions/2.7.txt"), 
+    gf("03-handwritten-xbgf/2.7-manual.glue"), 
+    |cwd:///test.mly| )
 ```
 
 When you run this you should see the XBGF commands listed on screen as
@@ -112,8 +118,8 @@ test.y as the input here).
 
 ```Rascal
  runTransforms(
-    gf("04-bisonified-grammar/2.7.2.y"), 
-    gf("05-handwritten-xbgf/2.7.2-manual.glue"), 
+    gf("04-conflictfree-menhir/2.7.mly"), 
+    gf("05-generated-xbgf/2.7-bisonify.glue"), 
     |cwd:///test2.y| )
 ```
 As before, the XBGF commands are listed as they're executed, and the
