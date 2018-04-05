@@ -48,9 +48,8 @@ test suite:
 >  python3 ./multitest.py 2.7
 
 This will make and then run the 2.7 front-end against the test cases
-in ../testsuite-python-lib for that version.  I haven't copied in the
-actual Python libraries in here, so this directory just contains a
-simple test file at the moment.  You can list multiple front-ends here
+in ../testsuite-python-lib for that version.  
+You can list multiple front-ends here
 and it will produce a latex-able table of the results.
 
 
